@@ -28,8 +28,7 @@ class GameManager:
         self.draw_score()
 
     def reset_ball(self):
-
-        if self.ball_group.sprite.rect.top <= 10 or self.ball_group.sprite.rect.bottom >= self.screen_height + 10:
+        if (self.ball_group.sprite.rect.top <= 10 or self.ball_group.sprite.rect.bottom >= self.screen_height + 10):
             pygame.mixer.Sound.play(self.plob_sound)
             self.ball_group.sprite.speed_y *= -1
             self.ball_group.sprite.active_animation = True
@@ -40,17 +39,12 @@ class GameManager:
             self.ball_group.sprite.image = self.ball_group.sprite.sprites[self.ball_group.sprite.current_sprite]
             self.ball_group.sprite.spr_list_anim -= 1
 
-            if not self.ball_group.sprite.spr_list_anim:
+            if not (self.ball_group.sprite.spr_list_anim):
                 self.ball_group.sprite.spr_list_anim = len(self.ball_group.sprite.sprites) - 1
                 self.ball_group.sprite.current_sprite = 0
                 self.ball_group.sprite.active_animation = False
 
             self.ball_group.sprite.image = self.ball_group.sprite.sprites[self.ball_group.sprite.current_sprite]
-
-            # for i in range(len(self.ball_group.sprite.sprites)): print(1) self.ball_group.sprite.current_sprite = (
-            # self.ball_group.sprite.current_sprite + 1) % (len(self.ball_group.sprite.sprites))
-            # self.ball_group.sprite.image = self.ball_group.sprite.sprites[self.ball_group.sprite.current_sprite]
-            # self.ball_group.draw(self.screen) self.ball_group.update()
 
         if self.ball_group.sprite.rect.right >= self.screen_width:
             self.opponent_score += 1
@@ -68,3 +62,26 @@ class GameManager:
 
         self.screen.blit(player_score, player_score_rect)
         self.screen.blit(opponent_score, opponent_score_rect)
+
+
+class Bot(pygame.sprite.Sprite):
+    def __init__(self, path, x_pos, y_pos, max_speed, screen_height, screen_width, ball_group):
+        super().__init__()
+        self.max_speed = max_speed
+        self.ball_group = ball_group
+        self.image = pygame.image.load(path)
+        self.rect = self.image.get_rect(center=(x_pos, y_pos))
+        self.screen_height = screen_height
+        self.screen_width = screen_width
+
+    def update(self):
+        if self.rect.centery < self.ball_group.sprite.rect.centery:
+            self.rect.centery += min(abs(self.rect.centery - self.ball_group.sprite.rect.centery), self.max_speed)
+        elif self.rect.centery > self.ball_group.sprite.rect.centery:
+            self.rect.centery -= min(abs(self.rect.centery - self.ball_group.sprite.rect.centery), self.max_speed)
+
+        # Constrain the bot's paddle within the screen bounds
+        if self.rect.top <= 0:
+            self.rect.top = 1
+        if self.rect.bottom > self.screen_height:
+            self.rect.bottom = self.screen_height

@@ -28,8 +28,6 @@ class Ball(Block):
         self.accent_color = (27, 35, 43)
         self.bg_color = pygame.Color('#2F373F')
         self.current_sprite = 0
-        # self.current_sprite = 0
-        # self.image = self.sprites[self.current_sprite]
         self.first_speed_x = speed_x * random.choice((-1, 1))
         self.first_speed_y = speed_y * random.choice((-1, 1))
         self.speed_x = speed_x * random.choice((-1, 1))
@@ -56,17 +54,7 @@ class Ball(Block):
         return (target - x) * math.exp(-coef * y)
 
     def collisions(self):
-        # if self.rect.top <= -10 or self.rect.bottom >= self.screen_height+10:
-        #     pygame.mixer.Sound.play(plob_sound)
-        #     self.speed_y *= -1
-        #     for i in range(len(self.sprites)):
-        #         print(self.sprites) # отладка
-        #         self.current_sprite = (self.current_sprite + 1) % (len(self.sprites))
-        #         self.image = self.sprites[self.current_sprite]
-        #         self.groups()
-        #         print(self.current_sprite) # отладка
-        #     # self.current_sprite = 0
-        #     # self.image = self.sprites[self.current_sprite]
+
 
         if pygame.sprite.spritecollide(self, self.paddles, False):
             pygame.mixer.Sound.play(plob_sound)
