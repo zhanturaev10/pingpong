@@ -80,11 +80,9 @@ def main_menu():
         screen.fill(WHITE)
 
         # Draw buttons
-        draw_button_with_delay(200, 150, 400, 50, "Player vs Player", handle_player_vs_player)
-        draw_button_with_delay(200, 250, 400, 50, "Player vs Bot", player_vs_bot_menu)
-        draw_button_with_delay(200, 350, 400, 50, "Settings", handle_settings)
-        draw_button_with_delay(200, 450, 400, 50, "Map Editor", handle_map_editor)
-        draw_button_with_delay(200, 550, 400, 50, "Quit", handle_quit)
+        button_positions = update_button_positions(len(main_menu_button_texts))
+        for i, (x, y) in enumerate(button_positions):
+            draw_button_with_delay(x, y, 400, 50, main_menu_button_texts[i], main_menu_button_actions[i])
 
         # Handle events
         handle_main_menu_events()
@@ -98,10 +96,9 @@ def player_vs_bot_menu():
         screen.fill(WHITE)
 
         # Draw buttons
-        draw_button_with_delay(200, 150, 400, 50, "Easy", handle_player_vs_bot_easy)
-        draw_button_with_delay(200, 250, 400, 50, "Normal", handle_player_vs_bot_normal)
-        draw_button_with_delay(200, 350, 400, 50, "Hard", handle_player_vs_bot_hard)
-        draw_button_with_delay(200, 450, 400, 50, "Back to Main Menu", return_to_main_menu)
+        button_positions = update_button_positions(len(player_vs_bot_menu_button_texts))
+        for i, (x, y) in enumerate(button_positions):
+            draw_button_with_delay(x, y, 400, 50, player_vs_bot_menu_button_texts[i], player_vs_bot_menu_button_actions[i])
 
         # Handle events
         handle_player_vs_bot_menu_events()
@@ -115,13 +112,12 @@ def settings_menu():
         screen.fill(WHITE)
 
         # Draw buttons
-        draw_button_with_delay(200, 100, 50, 50, "<", decrease_resolution)
-        draw_button_with_delay(650, 100, 50, 50, ">", increase_resolution)
-
-        # Draw current resolution text
-        draw_text(400, 100, f"Resolution: {res_options[current_resolution_index][0]}x{res_options[current_resolution_index][1]}")
-
-        draw_button_with_delay(200, 200, 400, 50, "Back to Main Menu", return_to_main_menu)
+        button_positions = update_button_positions(len(settings_menu_button_texts))
+        for i, (x, y) in enumerate(button_positions):
+            if i == 2:  # Draw resolution text differently
+                draw_text(x + 200, y, f"Resolution: {res_options[current_resolution_index][0]}x{res_options[current_resolution_index][1]}")
+            else:
+                draw_button_with_delay(x, y, 50, 50, settings_menu_button_texts[i], settings_menu_button_actions[i])
 
         # Handle events
         handle_settings_menu_events()
@@ -231,39 +227,38 @@ def change_resolution():
     # Update button positions and sizes based on the new resolution
     update_button_positions()
 
+
+main_menu_button_texts = ["Player vs Player", "Player vs Bot", "Settings", "Map Editor", "Quit"]
+main_menu_button_actions = [handle_player_vs_player, player_vs_bot_menu, handle_settings, handle_map_editor, handle_quit]
+
+player_vs_bot_menu_button_texts = ["Easy", "Normal", "Hard", "Back to Main Menu"]
+player_vs_bot_menu_button_actions = [handle_player_vs_bot_easy, handle_player_vs_bot_normal, handle_player_vs_bot_hard, return_to_main_menu]
+
+settings_menu_button_texts = ["<", ">", "Back to Main Menu"]
+settings_menu_button_actions = [decrease_resolution, increase_resolution, return_to_main_menu]
+
 # Function to update button positions and sizes based on the current resolution
-def update_button_positions():
-    # Main menu button positions
-    main_menu_buttons_y = [150, 250, 350, 450, 550]
-    player_vs_bot_menu_buttons_y = [150, 250, 350, 450]
-    settings_menu_buttons_y = [100, 200]
+def update_button_positions(num_buttons):
+    button_width = 400
+    button_height = 50
 
-    # Update button positions
-    buttons = [
-        (200, main_menu_buttons_y[0], 400, 50),  # Player vs Player
-        (200, main_menu_buttons_y[1], 400, 50),  # Player vs Bot
-        (200, main_menu_buttons_y[2], 400, 50),  # Settings
-        (200, main_menu_buttons_y[3], 400, 50),  # Map Editor
-        (200, main_menu_buttons_y[4], 400, 50),  # Quit
+    # Calculate horizontal and vertical center positions
+    center_x = SCREEN_WIDTH // 2
+    center_y = SCREEN_HEIGHT // 2
 
-        (200, player_vs_bot_menu_buttons_y[0], 400, 50),  # Easy
-        (200, player_vs_bot_menu_buttons_y[1], 400, 50),  # Normal
-        (200, player_vs_bot_menu_buttons_y[2], 400, 50),  # Hard
-        (200, player_vs_bot_menu_buttons_y[3], 400, 50),  # Back to Main Menu
+    # Calculate total height of all buttons
+    total_buttons_height = num_buttons * button_height
 
-        (200, settings_menu_buttons_y[0], 50, 50),  # "<" arrow
-        (650, settings_menu_buttons_y[0], 50, 50),  # ">" arrow
-        (400, settings_menu_buttons_y[0], 400, 50),  # Resolution text
-        (200, settings_menu_buttons_y[1], 400, 50)  # Back to Main Menu
-    ]
+    # Calculate the starting y position for the first button
+    start_y = center_y - (total_buttons_height // 2)
 
-    for i, button in enumerate(buttons):
-        buttons[i] = (
-            round(button[0] * SCREEN_WIDTH / 1920),
-            round(button[1] * SCREEN_HEIGHT / 1080),
-            round(button[2] * SCREEN_WIDTH / 1920),
-            round(button[3] * SCREEN_HEIGHT / 1080)
-        )
+    # Calculate button y positions based on start_y
+    button_y_positions = [start_y + i * button_height for i in range(num_buttons)]
+
+    # Calculate button x position based on center
+    button_x_position = center_x - (button_width // 2)
+
+    buttons = [(button_x_position, y) for y in button_y_positions]
 
     return buttons
 
