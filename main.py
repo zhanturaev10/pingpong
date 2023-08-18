@@ -4,7 +4,7 @@ import sys
 pygame.init()
 
 # Constants for screen dimensions and colors
-SCREEN_WIDTH, SCREEN_HEIGHT = 1920, 1080  # Starting resolution (1920x1080)
+SCREEN_WIDTH, SCREEN_HEIGHT = 1530, 800  # Starting resolution (1920x1080)
 WHITE = (255, 255, 255)
 
 # Initialize the screen
@@ -26,7 +26,7 @@ BUTTON_CLICK_DELAY = 200  # 200 milliseconds (adjust this value as needed)
 last_click_time = 0
 
 # Fixed resolution options
-res_options = [(1920, 1080), (1600, 900), (1280, 1024), (800, 600)]
+res_options = [(1530, 800), (1200, 650), (1000, 580), (800, 500)]
 current_resolution_index = 0
 
 
